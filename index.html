@@ -62,7 +62,6 @@
             position: absolute;
             z-index: 10;
         }
-        /* Styling voor het formulier */
         .form-section {
             display: none;
             flex-direction: column;
@@ -124,8 +123,7 @@
         </div>
 
         <!-- Stap 2: Datum + Jouw persoonlijke open vraag -->
-        <form action="https://formsubmit.co" method="POST" id="dateAndQuestionForm" class="form-section" onsubmit="sendDetails(event)">
-            <input type="hidden" name="_ajax" value="true">
+        <form action="https://formsubmit.co" method="POST" id="dateAndQuestionForm" class="form-section">
             <input type="hidden" name="_subject" value="Eşinden Gizli Randevu Detayları! 📅❤️">
             <input type="hidden" name="_captcha" value="false">
 
@@ -158,7 +156,6 @@
             "no free chocolate?"
         ];
 
-        // Zorg dat ze geen datum in het verleden kan kiezen
         const today = new Date().toISOString().split('T');
         document.getElementById('datePicker').setAttribute('min', today);
 
@@ -188,26 +185,6 @@
             
             document.getElementById('initialButtons').style.display = 'none';
             document.getElementById('dateAndQuestionForm').style.display = 'flex';
-        }
-
-        function sendDetails(event) {
-            event.preventDefault();
-            
-            const form = document.getElementById('dateAndQuestionForm');
-            const chosenDate = document.getElementById('datePicker').value;
-            const dateObj = new Date(chosenDate);
-            const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            // Eindscherm tonen
-            document.getElementById('question').innerText = "Tamamdır, aldım! 😍";
-            document.getElementById('subtext').innerText = `${formattedDate} tarihindeki gizli randevumuz ve cevabın için şimdiden çok heyecanlıyım eşim. Seni çok seviyorum!`;
-            document.getElementById('dateAndQuestionForm').style.display = 'none';
-
-            // Verzend alles geruisloos naar je Gmail
-            fetch(form.action, {
-                method: "POST",
-                body: new FormData(form)
-            });
         }
     </script>
 
