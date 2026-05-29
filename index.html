@@ -35,10 +35,6 @@
             font-size: 1.1rem;
             margin-bottom: 30px;
         }
-        .gif-container img {
-            max-width: 150px;
-            margin-bottom: 20px;
-        }
         .buttons {
             display: flex;
             justify-content: center;
@@ -46,7 +42,7 @@
             gap: 20px;
             height: 80px;
         }
-        button, input[type="submit"] {
+        button {
             padding: 12px 25px;
             font-size: 1.1rem;
             border: none;
@@ -55,89 +51,66 @@
             font-weight: bold;
             transition: transform 0.1s ease;
         }
-        #yesBtn {
+        #yesBtn, #proposalYesBtn {
             background-color: #ff4d6d;
             color: white;
             box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
         }
-        #noBtn {
+        #noBtn, #proposalNoBtn {
             background-color: #a0a0a0;
             color: white;
             position: absolute;
             z-index: 10;
         }
-        .date-selection {
+        /* Styling voor het romantische aanzoek */
+        .proposal-section {
             display: none;
             flex-direction: column;
             gap: 15px;
             margin-top: 20px;
-            text-align: left;
         }
-        label {
+        .proposal-text {
+            font-size: 1.3rem;
             font-weight: bold;
-            color: #4a4a4a;
-            font-size: 0.9rem;
-        }
-        input[type="date"], input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ffb3c1;
-            border-radius: 10px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-        }
-        input:focus {
-            border-color: #ff4d6d;
-        }
-        #submitBtn {
-            background-color: #ff4d6d;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
+            color: #ff4d6d;
+            line-height: 1.5;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="gif-container">
-            <img id="statusGif" src="https://giphy.com" alt="Cute Bear">
-        </div>
         
         <h1 id="question">Benimle randevuya çıkar mısın?</h1>
-        <p id="subtext">Zaten eşim olsan da seninle baş balla güzel bir randevuya çıkmayı çok istiyorum aşkım! Ama şşşt, bu randevu tamamen sürpriz ve bir sır... 😉</p>
+        <p id="subtext">Zaten eşim olsan da seninle baş başa güzel bir randevuya çıkmayı çok istiyorum aşkım! Ama şşşt, bu randevu tamamen sürpriz ve bir sır... 😉</p>
 
-        <!-- Eerste stap: Knoppen -->
+        <!-- Stap 1: De Date Knoppen -->
         <div class="buttons" id="initialButtons">
             <button id="yesBtn" onclick="showCalendar()">Evet!</button>
             <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">Hayır</button>
         </div>
 
-        <!-- Tweede stap: Formulier dat direct naar jouw Gmail stuurt -->
-        <form action="https://formsubmit.co" method="POST" id="dateForm" class="date-selection" onsubmit="sendDetails(event)">
+        <!-- Stap 2: Het Aanzoek (Formulier en invoervelden zijn nu weg) -->
+        <div class="proposal-section" id="proposalForm">
+            <div class="proposal-text">
+                To the most beautiful girl in the world, can i give you my last name? 💍
+            </div>
             
-            <input type="hidden" name="_ajax" value="true">
-            <input type="hidden" name="_subject" value="Eşinden Yeni Randevu Kaydı! ❤️">
-            <input type="hidden" name="_captcha" value="false">
-
-            <div>
-                <label for="datePicker">Hangi gün sana uyar? 📅</label>
-                <input type="date" id="datePicker" name="Gekozen Datum" required>
+            <div class="buttons" style="position: relative; width: 100%;">
+                <button id="proposalYesBtn" onclick="sendDetails()">Evet!</button>
+                <button id="proposalNoBtn" onmouseover="moveProposalNoButton()" onclick="moveProposalNoButton()">Hayır</button>
             </div>
-            <div>
-                <label for="contactInput">Telefon numaranı veya Instagram adresini yazabilirsin: 💬</label>
-                <input type="text" id="contactInput" name="Contactgegevens" placeholder="Örn: 06... veya @kullaniciadi" required>
-            </div>
-            <input type="submit" id="submitBtn" value="Gönder! ❤️">
-        </form>
+        </div>
     </div>
 
     <script>
         let yesScale = 1;
+        let proposalYesScale = 1;
         let noAttempts = 0;
+        let proposalNoAttempts = 0;
 
-        // Lijst met jouw custom zinnen voor de Nee-knop
+        // Jouw eigen grappige zinnen voor de eerste Nee-knop
         const customPhrases = [
             "esim que pasa?",
             "no una seguna por favor?",
@@ -147,9 +120,7 @@
             "no free chocolate?"
         ];
 
-        const today = new Date().toISOString().split('T');
-        document.getElementById('datePicker').setAttribute('min', today);
-
+        // 1. Beweging voor de EERSTE Nee-knop (Date-vraag)
         function moveNoButton() {
             const noBtn = document.getElementById('noBtn');
             const yesBtn = document.getElementById('yesBtn');
@@ -170,31 +141,64 @@
             noAttempts++;
         }
 
+        // Als ze op de eerste "Evet!" klikt, gaat ze naar het aanzoek
         function showCalendar() {
             document.getElementById('question').innerText = "Hadi planlayalım! 🎉";
-            document.getElementById('subtext').innerText = "Sana en uygun günü seç aşkım, gerisi bende.";
-            document.getElementById('statusGif').src = "https://giphy.com";
+            document.getElementById('subtext').innerText = "Sana küçük bir sorum daha var aşkım...";
             
             document.getElementById('initialButtons').style.display = 'none';
-            document.getElementById('dateForm').style.display = 'flex';
+            document.getElementById('proposalForm').style.display = 'flex';
+            
+            // Zorg dat de tweede nee-knop goed gepositioneerd start binnen de container
+            resetProposalNoButton();
         }
 
-        function sendDetails(event) {
-            event.preventDefault();
+        // 2. Beweging voor de TWEEDE Nee-knop (Aanzoek-vraag)
+        function moveProposalNoButton() {
+            const noBtn = document.getElementById('proposalNoBtn');
+            const yesBtn = document.getElementById('proposalYesBtn');
             
-            const form = document.getElementById('dateForm');
-            const chosenDate = document.getElementById('datePicker').value;
-            const dateObj = new Date(chosenDate);
-            const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
 
-            document.getElementById('question').innerText = "Tamamdır, aldım! 😍";
-            document.getElementById('subtext').innerText = `${formattedDate} tarihindeki gizli randevumuz için şimdiden çok heyecanlıyım. Seni çok seviyorum!`;
-            document.getElementById('statusGif').src = "https://giphy.com";
-            document.getElementById('dateForm').style.display = 'none';
+            proposalYesScale += 0.25;
+            yesBtn.style.transform = `scale(${proposalYesScale})`;
+            
+            // Grappige Turkse reacties specifiek voor het aanzoek als ze op nee probeert te klikken
+            proposalNoAttempts++;
+            if (proposalNoAttempts === 2) {
+                document.getElementById('subtext').innerText = "Eşim, ciddi misin? Kırmızı butona bas! 👀";
+            } else if (proposalNoAttempts === 4) {
+                document.getElementById('subtext').innerText = "Bu sorudan kaçamazsın aşkım, 'Evet' demek zorundasın! 💍";
+            }
+        }
 
-            fetch(form.action, {
+        function resetProposalNoButton() {
+            const noBtn = document.getElementById('proposalNoBtn');
+            noBtn.style.position = 'relative';
+            noBtn.style.left = '0px';
+            noBtn.style.top = '0px';
+        }
+
+        // Als ze op de tweede "Evet!" klikt, wordt de e-mail verstuurd
+        function sendDetails() {
+            document.getElementById('question').innerText = "Seni çok seviyorum! 😍";
+            document.getElementById('subtext').innerText = "Gizli randevumuz ve her şey için şimdiden çok heyecanlıyım eşim. Sonsuza dek!";
+            document.getElementById('proposalForm').style.display = 'none';
+
+            // Stuurt de definitieve 'JA' geruisloos naar jouw Gmail
+            fetch("https://formsubmit.co", {
                 method: "POST",
-                body: new FormData(form)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    "_subject": "Eşinden Harika Bir Haber! 💍❤️",
+                    "Aanzoek Beantwoord": "JA! Ze wil jouw achternaam! 😍",
+                    "_captcha": "false"
+                })
             });
         }
     </script>
