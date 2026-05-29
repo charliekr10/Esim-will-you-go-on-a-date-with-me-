@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wil je met me op date?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffe6e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+        h1 {
+            color: #ff4d6d;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #4a4a4a;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .gif-container img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 80px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s ease;
+        }
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+        }
+        #noBtn {
+            background-color: #a0a0a0;
+            color: white;
+            position: absolute;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Schattige GIF (vrij te gebruiken via Giphy) -->
+        <div class="gif-container">
+            <img id="statusGif" src="https://giphy.com" alt="Cute Bear">
+        </div>
+        
+        <h1 id="question">Wil je met me op date?</h1>
+        <p id="subtext">Ik beloof dat het gezellig wordt! 😉</p>
+
+        <div class="buttons">
+            <button id="yesBtn" onclick="celebrate()">Ja!</button>
+            <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">Nee</button>
+        </div>
+    </div>
+
+    <script>
+        let yesScale = 1;
+        let noAttempts = 0;
+
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+            
+            // Bereken een willekeurige plek binnen het scherm
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+            
+            // Zet de knop op de nieuwe plek
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+
+            // Maak de JA knop elke keer een stukje groter!
+            yesScale += 0.25;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            
+            // Verander subtiel de tekst na een aantal pogingen
+            noAttempts++;
+            if (noAttempts === 3) {
+                document.getElementById('subtext').innerText = "Hey! Misgeklikt? Probeer de rode knop eens... 👀";
+            } else if (noAttempts === 6) {
+                document.getElementById('subtext').innerText = "Opgeven heeft geen zin, de Ja-knop is onvermijdelijk! 🐻";
+            }
+        }
+
+        function celebrate() {
+            // Verander de tekst en afbeelding als er op JA wordt geklikt
+            document.getElementById('question').innerText = "Hoera! Het is een date! 🎉";
+            document.getElementById('subtext').innerText = "Ik stuur je snel een berichtje om wat af te spreken!";
+            document.getElementById('statusGif').src = "https://giphy.com"; // Feest gif
+            
+            // Verberg de Nee knop volledig
+            document.getElementById('noBtn').style.display = 'none';
+            
+            // Reset de grootte van de Ja knop voor het nette plaatje
+            document.getElementById('yesBtn').style.transform = 'scale(1)';
+            document.getElementById('yesBtn').innerText = "Dankjewel! ❤️";
+            document.getElementById('yesBtn').disabled = true;
+        }
+    </script>
+
+</body>
+</html>
